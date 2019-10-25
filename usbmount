@@ -95,6 +95,17 @@ if [ "$1" = add ]; then
     FSTYPE=$(echo "$DEVINFO" | sed 's/.*[[:blank:]]TYPE="\([^"]*\)".*/\1/g; s/[[:blank:]]*//g;')
     UUID=$(echo "$DEVINFO"   | sed 's/.*[[:blank:]]UUID="\([^"]*\)".*/\1/g; s/[[:blank:]]*//g;')
     USAGE=$(echo "$DEVINFO"  | sed 's/.*[[:blank:]]USAGE="\([^"]*\)".*/\1/g; s/[[:blank:]]*//g;')
+    LABEL=$(echo "$DEVINFO"  | sed 's/.*[[:blank:]]LABEL="\([^"]*\)".*/\1/g; s/[[:blank:]]*//g;')
+
+    if [ "$LABEL" = "boot" ]; then
+      log err "$DEVNAME skipping boot partition."
+      exit 0
+    fi
+
+    if [ "$LABEL" = "rootfs" ]; then
+      log err "$DEVNAME skipping rootfs partition."
+      exit 0
+    fi	
 
     if ! echo $USAGE | egrep -q "(filesystem|disklabel)"; then
 	log info "$DEVNAME does not contain a filesystem or disklabel"
